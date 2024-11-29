@@ -1,19 +1,18 @@
 from fastapi import FastAPI
-from cadeira import Cadeira
+from fastapi import Query
+from http import HTTPStatus
+from src.models.cadeira import Cadeira as Cadeira
+
 app = FastAPI()
 
-
-#
-
 app.state.cadeiras_db={}
-
 
 @app.get("/cadeiras/")
 async def getCadeiras():
     cadeiras = "\n".join(str(cadeira) for cadeira in app.state.cadeiras_db.values())
     return cadeiras
 
-@app.post("/cadeiras/", response_model = Cadeira)
+@app.post("/cadeiras/", status_code = HTTPStatus.CREATED, response_model = Cadeira)
 async def addCadeiras(cadeira: Cadeira):
     app.state.cadeiras_db[cadeira.id]=cadeira
     return cadeira
@@ -26,8 +25,8 @@ async def editCadeiras(id: int, cadeira: Cadeira):
         return cadeiras_db[id]
     return {"mensagem": "Cadeira inexistente"}
 
-@app.delete("/cadeiras/{id}")
-async def deleteCadeiras(id:int):
+@app.delete("/cadeiras/")
+async def deleteCadeiras(id:int = Query(...)):
     try:
         app.state.cadeiras_db.pop(id)
         return {"message": "deletado com sucesso"}
