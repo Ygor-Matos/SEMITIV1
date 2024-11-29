@@ -1,3 +1,5 @@
 .venv
 .idea
-__pyachce__/
+/semiti
+/__pycache__
+/src/__pycache__
